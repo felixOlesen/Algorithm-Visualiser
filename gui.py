@@ -45,3 +45,46 @@ while True:
         window["-GRAPH-"].move_figure(other_circle, 1, 0)
 
 window.close()
+
+GRAPH_SIZE = (1000, 800)
+START = (500, 400)       # We'll assume X and Y are both this value
+SQ_SIZE = 40                # Both width and height will be this value
+
+layout = [[sg.Graph(
+            canvas_size=GRAPH_SIZE, graph_bottom_left=(0, 0), graph_top_right=GRAPH_SIZE,   # Define the graph area
+            drag_submits=True,      # mouse move events
+            enable_events=True,
+            background_color='lightblue',
+            key="-GRAPH-",
+            pad=0)]]
+
+window = sg.Window("Simple Circle Movement", layout, finalize=True, margins=(0,0))
+
+class PSO:
+    def __init__(self, P=20, G=100):
+        '''Initialising the algorithm visualiser'''
+        self.P = P
+        self.G = G
+
+'''
+PSO PSEUDO CODE
+for t=1 : maximum generation
+    for i = 1 : population size
+        if f(x_id(t)) < f(p_t(t)) then p_i(t) = x_id(t)
+            f(p_g(t)) = min_t(f(p_t(t)))
+        end
+        for d = 1 : dimension
+            v_id(t+1) = wv_id(t) + c1r1(p_i-x_id(t)) + c2r2(p_g - x_id(t))
+            x_id(t+1) = x_id(t) + v_id(t+1)
+
+            if v_id(t+1) > v_max then v_id(t+1) = v_max
+            else if v_id(t+1) < v_max then v_id(t+1) = v_min
+            end
+
+            if x_id(t+1) > x_max then x_id(t+1) = x_max
+            else if x_id(t+1) < x_min then x_id(t+1) = x_min
+            end
+        end
+    end
+end
+'''
