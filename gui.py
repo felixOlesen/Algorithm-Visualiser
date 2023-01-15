@@ -23,6 +23,22 @@ def BealeFunc(x1, x2):
 
 print(BealeFunc(3,0.5))
 
+# Himmelblau's Function 
+# Global Minima at: 
+# x1 = 3, x2 = 2
+# x1 = -2.805118, x2 = 3.131312
+# x1 = -3.779310, x2 = -3.283186
+# x1 = 3.584428, x2 = -1.848126
+# Bounded in range: x1 ∈ [-5, 5], x2 ∈ [-5, 5]
+
+def HimmelblauFunc(x1, x2):
+    return (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2
+
+print(HimmelblauFunc(3,2))
+print(HimmelblauFunc(-2.805118,3.131312))
+print(HimmelblauFunc(-3.779310,-3.283186))
+print(HimmelblauFunc(3.584428,-1.848126))
+
 layout = [[sg.Graph(
             canvas_size=GRAPH_SIZE, graph_bottom_left=(0, 0), graph_top_right=GRAPH_SIZE,   # Define the graph area
             drag_submits=True,      # mouse move events
