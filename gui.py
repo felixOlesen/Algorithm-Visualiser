@@ -1,8 +1,19 @@
 import PySimpleGUI as sg
+import numpy as np
 
 GRAPH_SIZE = (1000, 900)
 START = (500, 400)       # We'll assume X and Y are both this value
 SQ_SIZE = 5                # Both width and height will be this value
+
+# McCormick Function 
+# Global Minimum at: x1 = -0.54719, x2 = -1.54719
+# 
+
+def MccormickFunc(x1, x2):
+    result = np.sin(x1+x2)+((x1-x2)**2)-(1.5*x1)+(2.5*x2)+1
+    return result
+
+print(MccormickFunc(-0.54719,-1.54719))
 
 layout = [[sg.Graph(
             canvas_size=GRAPH_SIZE, graph_bottom_left=(0, 0), graph_top_right=GRAPH_SIZE,   # Define the graph area
@@ -87,3 +98,12 @@ for t=1 : maximum generation
     end
 end
 '''
+
+'''
+TODO: 
+Fitness Functions:
+Beale Function
+Himmelblau's Function
+McCormick Function
+'''
+
