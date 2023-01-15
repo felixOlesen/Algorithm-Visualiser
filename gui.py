@@ -12,7 +12,6 @@ SQ_SIZE = 5                # Both width and height will be this value
 def MccormickFunc(x1, x2):
     return np.sin(x1+x2)+((x1-x2)**2)-(1.5*x1)+(2.5*x2)+1
 
-print(MccormickFunc(-0.54719,-1.54719))
 
 # Beale Function 
 # Global Minimum at: x1 = 3, x2 = 0.5
@@ -21,7 +20,6 @@ print(MccormickFunc(-0.54719,-1.54719))
 def BealeFunc(x1, x2):
     return (1.5 - x1 + x1*x2)**2 + (2.25 - x1 + x1*x2**2)**2 + (2.625 - x1 + x1*x2**3)**2
 
-print(BealeFunc(3,0.5))
 
 # Himmelblau's Function 
 # Global Minima at: 
@@ -34,10 +32,6 @@ print(BealeFunc(3,0.5))
 def HimmelblauFunc(x1, x2):
     return (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2
 
-print(HimmelblauFunc(3,2))
-print(HimmelblauFunc(-2.805118,3.131312))
-print(HimmelblauFunc(-3.779310,-3.283186))
-print(HimmelblauFunc(3.584428,-1.848126))
 
 layout = [[sg.Graph(
             canvas_size=GRAPH_SIZE, graph_bottom_left=(0, 0), graph_top_right=GRAPH_SIZE,   # Define the graph area
@@ -125,8 +119,13 @@ end
 
 '''
 TODO: 
-Fitness Functions:
-Beale Function
-Himmelblau's Function
+
+PSO Functions:
+- Initialize control params
+- Initialize population of N particles
+    - Individual(x1, x2)
+    - pbest = update afer each individual update
+    - gbest = update after every particle has been updated
+
 '''
 
