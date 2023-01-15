@@ -7,13 +7,21 @@ SQ_SIZE = 5                # Both width and height will be this value
 
 # McCormick Function 
 # Global Minimum at: x1 = -0.54719, x2 = -1.54719
-# 
+# Bounded in range: x1 ∈ [-1.5, 4], x2 ∈ [-3, 4]
 
 def MccormickFunc(x1, x2):
-    result = np.sin(x1+x2)+((x1-x2)**2)-(1.5*x1)+(2.5*x2)+1
-    return result
+    return np.sin(x1+x2)+((x1-x2)**2)-(1.5*x1)+(2.5*x2)+1
 
 print(MccormickFunc(-0.54719,-1.54719))
+
+# Beale Function 
+# Global Minimum at: x1 = 3, x2 = 0.5
+# Bounded in range: x1 ∈ [-4.5, 4.5], x2 ∈ [-4.5, 4.5]
+
+def BealeFunc(x1, x2):
+    return (1.5 - x1 + x1*x2)**2 + (2.25 - x1 + x1*x2**2)**2 + (2.625 - x1 + x1*x2**3)**2
+
+print(BealeFunc(3,0.5))
 
 layout = [[sg.Graph(
             canvas_size=GRAPH_SIZE, graph_bottom_left=(0, 0), graph_top_right=GRAPH_SIZE,   # Define the graph area
@@ -104,6 +112,5 @@ TODO:
 Fitness Functions:
 Beale Function
 Himmelblau's Function
-McCormick Function
 '''
 
