@@ -1,8 +1,8 @@
 import PySimpleGUI as sg
 
-GRAPH_SIZE = (1000, 800)
+GRAPH_SIZE = (1000, 900)
 START = (500, 400)       # We'll assume X and Y are both this value
-SQ_SIZE = 40                # Both width and height will be this value
+SQ_SIZE = 5                # Both width and height will be this value
 
 layout = [[sg.Graph(
             canvas_size=GRAPH_SIZE, graph_bottom_left=(0, 0), graph_top_right=GRAPH_SIZE,   # Define the graph area
@@ -30,25 +30,24 @@ other_circle = window["-GRAPH-"].draw_circle(START,
 for i in range(300):
     window["-GRAPH-"].move_figure(other_circle, 1, 0)
 
-
-
+delay_boi = 1000
 while True:
-    event, values = window.read()
+    event, values = window.read(timeout=delay_boi)
     if event == sg.WIN_CLOSED:
         break
-    print(event, values) if event != sg.TIMEOUT_EVENT else None # our normal debug print, but for this demo, don't spam output with timeouts
+    #print(event, values) if event != sg.TIMEOUT_EVENT else None # our normal debug print, but for this demo, don't spam output with timeouts
+    window["-GRAPH-"].move_figure(other_circle, 1, 0)
 
-
-    if event == "-GRAPH-":  # if there's a "Graph" event, then it's a mouse movement. Move the square
-        x, y = values["-GRAPH-"]        # get mouse position
-        window["-GRAPH-"].relocate_figure(circle, x - SQ_SIZE // 2, y + SQ_SIZE // 2)   # Move using center of square to mouse pos
-        window["-GRAPH-"].move_figure(other_circle, 1, 0)
+    #if event == "-GRAPH-":  # if there's a "Graph" event, then it's a mouse movement. Move the square
+    #    x, y = values["-GRAPH-"]        # get mouse position
+    #    window["-GRAPH-"].relocate_figure(circle, x - SQ_SIZE // 2, y + SQ_SIZE // 2)   # Move using center of square to mouse pos
+    #    window["-GRAPH-"].move_figure(other_circle, 1, 0)
 
 window.close()
 
-GRAPH_SIZE = (1000, 800)
-START = (500, 400)       # We'll assume X and Y are both this value
-SQ_SIZE = 40                # Both width and height will be this value
+GRAPH_SIZE = (800, 800)
+START = (400, 400)       # We'll assume X and Y are both this value
+CIRCLE_SIZE = 5                # Both width and height will be this value
 
 layout = [[sg.Graph(
             canvas_size=GRAPH_SIZE, graph_bottom_left=(0, 0), graph_top_right=GRAPH_SIZE,   # Define the graph area
