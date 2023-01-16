@@ -1,8 +1,9 @@
 import PySimpleGUI as sg
 import numpy as np
+import random
 
 GRAPH_SIZE = (1000, 900)
-START = (500, 400)       # We'll assume X and Y are both this value
+START = (450, 450)       # We'll assume X and Y are both this value
 SQ_SIZE = 5                # Both width and height will be this value
 
 # McCormick Function 
@@ -32,6 +33,16 @@ def BealeFunc(x1, x2):
 def HimmelblauFunc(x1, x2):
     return (x1**2 + x2 - 11)**2 + (x1 + x2**2 - 7)**2
 
+
+def CalcFitness(x1, x2, fitFunc):
+        fitness = 0
+        if fitFunc == "himmelblau":
+            fitness = HimmelblauFunc(x1, x2)
+        elif fitFunc == "beale":
+            fitness = BealeFunc(x1, x2)
+        elif fitFunc == "mccormick":
+            fitness = MccormickFunc(x1, x2)
+        return fitness
 
 layout = [[sg.Graph(
             canvas_size=GRAPH_SIZE, graph_bottom_left=(0, 0), graph_top_right=GRAPH_SIZE,   # Define the graph area
@@ -89,13 +100,64 @@ layout = [[sg.Graph(
 window = sg.Window("Simple Circle Movement", layout, finalize=True, margins=(0,0))
 
 class PSO:
-    def __init__(self, P=20, G=100):
-        '''Initialising the algorithm visualiser'''
-        self.P = P
-        self.G = G
+    def __init__(self, PopSize=5, Gen=20, FitFunc="himmelblau"):
+        # Initializing PSO params
+        self.PopSize = PopSize
+        self.Gen = Gen
+        self.C1 = 2
+        self.C2 = 2
+        self.WMIN = 0.001
+        self.WMAX = 1
+        self.VMAX = 1
+        self.Pop = list()
+        self.FitFunc = FitFunc
+        if FitFunc == "himmelblau":
+            self.X1MIN = -4.5
+            self.X1MAX = 4.5
+            self.X2MIN = -4.5
+            self.X2MAX = 4.5
+        elif FitFunc == "beale":
+            self.X1MIN = -5
+            self.X1MAX = 5
+            self.X2MIN = -5
+            self.X2MAX = 5
+        elif FitFunc == "mccormick":
+            self.X1MIN = -1.5
+            self.X1MAX = 4
+            self.X2MIN = -3
+            self.X2MAX = 4
+        
+
+    def PopulateSpace(self):
+        for i in range(self.PopSize):
+            ind_i = (random.uniform(self.X1MIN, self.X1MAX), random.uniform(self.X2MIN, self.X2MAX))
+            self.Pop.append(ind_i)
+            print(self.Pop)
+
+
+
+    
+        
 
 '''
 PSO PSEUDO CODE
+HIGH LEVEL:
+do
+    for each particle
+        calculate the objective of the particle
+        update pbest if required
+        update gbest if required
+    end
+
+    update inertia weight
+
+    for each particle
+        update the velocity (V)
+        update the position (X)
+    end
+while end condition is not satisfied
+
+LOW LEVEL:
 for t=1 : maximum generation
     for i = 1 : population size
         if f(x_id(t)) < f(p_t(t)) then p_i(t) = x_id(t)
