@@ -157,12 +157,10 @@ GUI Stuff
 GRAPH_SIZE = (450, 450)
 START = (0, 0)              # We'll assume X and Y are both this value
 PARTICLE_SIZE = 3           # Both width and height will be this value
-DELAY = 1000
+DELAY = 500
 
 layout = [[sg.Graph(
             canvas_size=GRAPH_SIZE, graph_bottom_left=(-225, -225), graph_top_right=(225,225),   # Define the graph area
-            drag_submits=True,      # mouse move events
-            enable_events=True,
             background_color='white',
             key="-GRAPH-",
             pad=0)]]
