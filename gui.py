@@ -109,8 +109,10 @@ class PSO:
         self.WMIN = 0.001
         self.WMAX = 1
         self.VMAX = 1
+        self.V_INITIAL = 0.5
         self.Pop = list()
         self.FitFunc = FitFunc
+        self.currentGen = 0
 
         if FitFunc == "himmelblau":
             self.X1MIN = -4.5
@@ -131,16 +133,27 @@ class PSO:
 
     def PopulateSpace(self):
         for i in range(self.PopSize):
-            ind_i = np.array([random.uniform(self.X1MIN, self.X1MAX), random.uniform(self.X2MIN, self.X2MAX)])
+            ind_i = np.array([random.uniform(self.X1MIN, self.X1MAX), random.uniform(self.X2MIN, self.X2MAX), self.V_INITIAL, self.V_INITIAL])
             self.Pop.append(ind_i)
             print(self.Pop)
     
-    def UpdateVelocity(self):
-        velocity = 0
-    
-    def UpdatePosition(self):
-        position = 0
-    
+    def UpdateParticle(self, ind, pbest, gbest):
+        # ind = nparray(x1, x2, v1, v2)
+        # r1, r2 = random numbers in range [0,1]
+        # old_vi = old velocity for decision var i after weights appplied
+        # personal = persona1 best vector after weights applied
+        # glob = global best vector after weights applied
+        # new_vi = new velocity for decision var i
+        for i in range(2):
+            r1 = random.random()
+            r2 = random.random()
+            old_vi = self.WMAX * ind[i+2]
+            personal = self.C1 * r1 * (pbest[i] - ind[i])
+            glob = self.C2 * r2 * (gbest[i] - ind[i])
+            new_vi = old_vi + personal + glob
+            ind[i+2] = new_vi
+            ind[i] = ind[i] + new_vi
+        return ind
 
 '''
 PSO PSEUDO CODE
@@ -188,6 +201,13 @@ TODO:
 PSO Functions:
 - pbest = update afer each individual update
 - gbest = update after every particle has been updated
+- Write in limits for position e.g. [-4.5, 4.5]
+- Decrease acceleration constants and weights in update function
+GUI Stuff
+- Set the center of the graph
+- Draw the circles for each individual
+- Draw circle for global minima
+- Update position with velocity from update function
 
 '''
 
