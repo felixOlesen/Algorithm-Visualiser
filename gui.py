@@ -44,76 +44,20 @@ def CalcFitness(x1, x2, fitFunc):
             fitness = MccormickFunc(x1, x2)
         return fitness
 
-layout = [[sg.Graph(
-            canvas_size=GRAPH_SIZE, graph_bottom_left=(0, 0), graph_top_right=GRAPH_SIZE,   # Define the graph area
-            drag_submits=True,      # mouse move events
-            enable_events=True,
-            background_color='lightblue',
-            key="-GRAPH-",
-            pad=0)]]
-
-window = sg.Window("Simple Circle Movement", layout, finalize=True, margins=(0,0))
-
-# draw the square we'll move around
-#square = window["-GRAPH-"].draw_rectangle(START, (START[0]+SQ_SIZE, START[1]+SQ_SIZE), fill_color='black')
-circle = window["-GRAPH-"].draw_circle(START,
-    SQ_SIZE,
-    fill_color = "green",
-    line_color = "green",
-    line_width = 1)
-other_circle = window["-GRAPH-"].draw_circle(START,
-    SQ_SIZE,
-    fill_color = "red",
-    line_color = "red",
-    line_width = 1)
-
-for i in range(300):
-    window["-GRAPH-"].move_figure(other_circle, 1, 0)
-
-delay_boi = 1000
-while True:
-    event, values = window.read(timeout=delay_boi)
-    if event == sg.WIN_CLOSED:
-        break
-    #print(event, values) if event != sg.TIMEOUT_EVENT else None # our normal debug print, but for this demo, don't spam output with timeouts
-    window["-GRAPH-"].move_figure(other_circle, 1, 0)
-
-    #if event == "-GRAPH-":  # if there's a "Graph" event, then it's a mouse movement. Move the square
-    #    x, y = values["-GRAPH-"]        # get mouse position
-    #    window["-GRAPH-"].relocate_figure(circle, x - SQ_SIZE // 2, y + SQ_SIZE // 2)   # Move using center of square to mouse pos
-    #    window["-GRAPH-"].move_figure(other_circle, 1, 0)
-
-window.close()
-
-GRAPH_SIZE = (800, 800)
-START = (400, 400)       # We'll assume X and Y are both this value
-CIRCLE_SIZE = 5                # Both width and height will be this value
-
-layout = [[sg.Graph(
-            canvas_size=GRAPH_SIZE, graph_bottom_left=(0, 0), graph_top_right=GRAPH_SIZE,   # Define the graph area
-            drag_submits=True,      # mouse move events
-            enable_events=True,
-            background_color='lightblue',
-            key="-GRAPH-",
-            pad=0)]]
-
-window = sg.Window("Simple Circle Movement", layout, finalize=True, margins=(0,0))
-
 class PSO:
-    def __init__(self, PopSize=5, Gen=20, FitFunc="himmelblau"):
+    def __init__(self, PopSize=5, Gen=20, FitFunc="beale"):
         # Initializing PSO params
         self.PopSize = PopSize
         self.Gen = Gen
-        self.C1 = 2
-        self.C2 = 2
+        self.C1 = 0.3
+        self.C2 = 0.6
         self.WMIN = 0.001
-        self.WMAX = 1
+        self.WMAX = 0.5
         self.VMAX = 2
         self.VMIN = -2
-        self.V_INITIAL = 0.5
+        self.V_INITIAL = 0.01
         self.Pop = list()
         self.FitFunc = FitFunc
-        self.currentGen = 0
 
         if FitFunc == "himmelblau":
             self.X1MIN = -4.5
@@ -136,7 +80,7 @@ class PSO:
         for i in range(self.PopSize):
             ind_i = np.array([random.uniform(self.X1MIN, self.X1MAX), random.uniform(self.X2MIN, self.X2MAX), self.V_INITIAL, self.V_INITIAL])
             self.Pop.append(ind_i)
-            print(self.Pop)
+        print(self.Pop)
     
     def UpdateParticle(self, ind, pbest, gbest):
         # ind = nparray(x1, x2, v1, v2)
@@ -171,6 +115,47 @@ class PSO:
             ind[i] = new_pos
 
         return ind
+
+    def EvalPop(self, ind):
+        return CalcFitness(ind[0], ind[1], self.FitFunc)
+
+    def PSOLoop(self):
+        gbest = np.array([0,0,0,0])
+        for gen in range(self.Gen):
+            #self.Pop = list.sort(self.Pop, key=self.EvalPop)
+            #self.gbest = self.Pop[0]
+            
+            particle_index = 0
+            for part in self.Pop:
+
+                part_fitness = CalcFitness(part[0], part[1], self.FitFunc)
+                
+
+                if gen == 0:
+                    pbest = part
+                elif part_fitness < CalcFitness(pbest[0], pbest[1], self.FitFunc):
+                    pbest = part
+                
+                if gen == 0 and particle_index == 0:
+                    gbest = part
+                elif part_fitness < CalcFitness(gbest[0], gbest[1], self.FitFunc):
+                    gbest = part
+
+                self.Pop[particle_index] = self.UpdateParticle(part, pbest, gbest)
+                particle_index += 1
+
+            print("Current global best position: (X1: ",gbest[0], " X2: ", gbest[1])
+            print("Global Best Fitness: ", CalcFitness(pbest[0], pbest[1], self.FitFunc))
+
+
+pso = PSO()
+pso.PopulateSpace()
+pso.PSOLoop()
+
+
+
+
+
 
 '''
 PSO PSEUDO CODE
@@ -228,3 +213,57 @@ GUI Stuff
 
 '''
 
+layout = [[sg.Graph(
+            canvas_size=GRAPH_SIZE, graph_bottom_left=(0, 0), graph_top_right=GRAPH_SIZE,   # Define the graph area
+            drag_submits=True,      # mouse move events
+            enable_events=True,
+            background_color='lightblue',
+            key="-GRAPH-",
+            pad=0)]]
+
+window = sg.Window("Simple Circle Movement", layout, finalize=True, margins=(0,0))
+
+# draw the square we'll move around
+#square = window["-GRAPH-"].draw_rectangle(START, (START[0]+SQ_SIZE, START[1]+SQ_SIZE), fill_color='black')
+circle = window["-GRAPH-"].draw_circle(START,
+    SQ_SIZE,
+    fill_color = "green",
+    line_color = "green",
+    line_width = 1)
+other_circle = window["-GRAPH-"].draw_circle(START,
+    SQ_SIZE,
+    fill_color = "red",
+    line_color = "red",
+    line_width = 1)
+
+for i in range(300):
+    window["-GRAPH-"].move_figure(other_circle, 1, 0)
+
+delay_boi = 1000
+while True:
+    event, values = window.read(timeout=delay_boi)
+    if event == sg.WIN_CLOSED:
+        break
+    #print(event, values) if event != sg.TIMEOUT_EVENT else None # our normal debug print, but for this demo, don't spam output with timeouts
+    window["-GRAPH-"].move_figure(other_circle, 1, 0)
+
+    #if event == "-GRAPH-":  # if there's a "Graph" event, then it's a mouse movement. Move the square
+    #    x, y = values["-GRAPH-"]        # get mouse position
+    #    window["-GRAPH-"].relocate_figure(circle, x - SQ_SIZE // 2, y + SQ_SIZE // 2)   # Move using center of square to mouse pos
+    #    window["-GRAPH-"].move_figure(other_circle, 1, 0)
+
+window.close()
+
+GRAPH_SIZE = (800, 800)
+START = (400, 400)       # We'll assume X and Y are both this value
+CIRCLE_SIZE = 5                # Both width and height will be this value
+
+layout = [[sg.Graph(
+            canvas_size=GRAPH_SIZE, graph_bottom_left=(0, 0), graph_top_right=GRAPH_SIZE,   # Define the graph area
+            drag_submits=True,      # mouse move events
+            enable_events=True,
+            background_color='lightblue',
+            key="-GRAPH-",
+            pad=0)]]
+
+window = sg.Window("Simple Circle Movement", layout, finalize=True, margins=(0,0))
