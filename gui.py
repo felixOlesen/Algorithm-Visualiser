@@ -108,7 +108,8 @@ class PSO:
         self.C2 = 2
         self.WMIN = 0.001
         self.WMAX = 1
-        self.VMAX = 1
+        self.VMAX = 2
+        self.VMIN = -2
         self.V_INITIAL = 0.5
         self.Pop = list()
         self.FitFunc = FitFunc
@@ -151,8 +152,24 @@ class PSO:
             personal = self.C1 * r1 * (pbest[i] - ind[i])
             glob = self.C2 * r2 * (gbest[i] - ind[i])
             new_vi = old_vi + personal + glob
+
+            #if new_vi < self.VMIN:
+            #    new_vi = self.VMIN
+            #elif new_vi > self.VMAX:
+            #    new_vi = self.VMAX
             ind[i+2] = new_vi
-            ind[i] = ind[i] + new_vi
+
+            new_pos = ind[i] + new_vi
+            if i == 0 and new_pos < self.X1MIN:
+                new_pos = self.X1MIN
+            elif i == 0 and new_pos > self.X1MAX:
+                new_pos = self.X1MAX
+            elif i == 1 and new_pos < self.X2MIN:
+                new_pos = self.X2MIN
+            elif i == 1 and new_pos > self.X2MAX:
+                new_pos = self.X2MAX
+            ind[i] = new_pos
+
         return ind
 
 '''
