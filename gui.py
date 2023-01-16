@@ -152,65 +152,13 @@ pso = PSO()
 pso.PopulateSpace()
 pso.PSOLoop()
 
-
-
-
-
-
-'''
-PSO PSEUDO CODE
-HIGH LEVEL:
-do
-    for each particle
-        calculate the objective of the particle
-        update pbest if required
-        update gbest if required
-    end
-
-    update inertia weight
-
-    for each particle
-        update the velocity (V)
-        update the position (X)
-    end
-while end condition is not satisfied
-
-LOW LEVEL:
-for t=1 : maximum generation
-    for i = 1 : population size
-        if f(x_id(t)) < f(p_t(t)) then p_i(t) = x_id(t)
-            f(p_g(t)) = min_t(f(p_t(t)))
-        end
-        for d = 1 : dimension
-            v_id(t+1) = wv_id(t) + c1r1(p_i-x_id(t)) + c2r2(p_g - x_id(t))
-            x_id(t+1) = x_id(t) + v_id(t+1)
-
-            if v_id(t+1) > v_max then v_id(t+1) = v_max
-            else if v_id(t+1) < v_max then v_id(t+1) = v_min
-            end
-
-            if x_id(t+1) > x_max then x_id(t+1) = x_max
-            else if x_id(t+1) < x_min then x_id(t+1) = x_min
-            end
-        end
-    end
-end
-'''
-
 '''
 TODO: 
-
-PSO Functions:
-- pbest = update afer each individual update
-- gbest = update after every particle has been updated
-- Write in limits for position e.g. [-4.5, 4.5]
-- Decrease acceleration constants and weights in update function
 GUI Stuff
 - Set the center of the graph
 - Draw the circles for each individual
 - Draw circle for global minima
-- Update position with velocity from update function
-
+- Update position with velocity or position of particles from update function
 '''
 
 layout = [[sg.Graph(
@@ -253,17 +201,3 @@ while True:
     #    window["-GRAPH-"].move_figure(other_circle, 1, 0)
 
 window.close()
-
-GRAPH_SIZE = (800, 800)
-START = (400, 400)       # We'll assume X and Y are both this value
-CIRCLE_SIZE = 5                # Both width and height will be this value
-
-layout = [[sg.Graph(
-            canvas_size=GRAPH_SIZE, graph_bottom_left=(0, 0), graph_top_right=GRAPH_SIZE,   # Define the graph area
-            drag_submits=True,      # mouse move events
-            enable_events=True,
-            background_color='lightblue',
-            key="-GRAPH-",
-            pad=0)]]
-
-window = sg.Window("Simple Circle Movement", layout, finalize=True, margins=(0,0))
