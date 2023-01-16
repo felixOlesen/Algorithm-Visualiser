@@ -111,6 +111,7 @@ class PSO:
         self.VMAX = 1
         self.Pop = list()
         self.FitFunc = FitFunc
+
         if FitFunc == "himmelblau":
             self.X1MIN = -4.5
             self.X1MAX = 4.5
@@ -130,14 +131,16 @@ class PSO:
 
     def PopulateSpace(self):
         for i in range(self.PopSize):
-            ind_i = (random.uniform(self.X1MIN, self.X1MAX), random.uniform(self.X2MIN, self.X2MAX))
+            ind_i = np.array([random.uniform(self.X1MIN, self.X1MAX), random.uniform(self.X2MIN, self.X2MAX)])
             self.Pop.append(ind_i)
             print(self.Pop)
-
-
-
     
-        
+    def UpdateVelocity(self):
+        velocity = 0
+    
+    def UpdatePosition(self):
+        position = 0
+    
 
 '''
 PSO PSEUDO CODE
@@ -183,11 +186,8 @@ end
 TODO: 
 
 PSO Functions:
-- Initialize control params
-- Initialize population of N particles
-    - Individual(x1, x2)
-    - pbest = update afer each individual update
-    - gbest = update after every particle has been updated
+- pbest = update afer each individual update
+- gbest = update after every particle has been updated
 
 '''
 
