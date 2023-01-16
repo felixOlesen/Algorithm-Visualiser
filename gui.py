@@ -2,9 +2,7 @@ import PySimpleGUI as sg
 import numpy as np
 import random
 
-GRAPH_SIZE = (1000, 900)
-START = (450, 450)       # We'll assume X and Y are both this value
-SQ_SIZE = 5                # Both width and height will be this value
+
 
 # McCormick Function 
 # Global Minimum at: x1 = -0.54719, x2 = -1.54719
@@ -156,11 +154,16 @@ GUI Stuff
 - Update position with velocity or position of particles from update function
 '''
 
+GRAPH_SIZE = (450, 450)
+START = (0, 0)              # We'll assume X and Y are both this value
+PARTICLE_SIZE = 3           # Both width and height will be this value
+DELAY = 1000
+
 layout = [[sg.Graph(
-            canvas_size=GRAPH_SIZE, graph_bottom_left=(0, 0), graph_top_right=GRAPH_SIZE,   # Define the graph area
+            canvas_size=GRAPH_SIZE, graph_bottom_left=(-225, -225), graph_top_right=(225,225),   # Define the graph area
             drag_submits=True,      # mouse move events
             enable_events=True,
-            background_color='lightblue',
+            background_color='white',
             key="-GRAPH-",
             pad=0)]]
 
@@ -169,30 +172,15 @@ window = sg.Window("Simple Circle Movement", layout, finalize=True, margins=(0,0
 # draw the square we'll move around
 #square = window["-GRAPH-"].draw_rectangle(START, (START[0]+SQ_SIZE, START[1]+SQ_SIZE), fill_color='black')
 circle = window["-GRAPH-"].draw_circle(START,
-    SQ_SIZE,
+    PARTICLE_SIZE,
     fill_color = "green",
     line_color = "green",
     line_width = 1)
-other_circle = window["-GRAPH-"].draw_circle(START,
-    SQ_SIZE,
-    fill_color = "red",
-    line_color = "red",
-    line_width = 1)
 
-for i in range(300):
-    window["-GRAPH-"].move_figure(other_circle, 1, 0)
-
-delay_boi = 1000
 while True:
-    event, values = window.read(timeout=delay_boi)
+    event, values = window.read(timeout=DELAY)
     if event == sg.WIN_CLOSED:
         break
-    #print(event, values) if event != sg.TIMEOUT_EVENT else None # our normal debug print, but for this demo, don't spam output with timeouts
-    window["-GRAPH-"].move_figure(other_circle, 1, 0)
 
-    #if event == "-GRAPH-":  # if there's a "Graph" event, then it's a mouse movement. Move the square
-    #    x, y = values["-GRAPH-"]        # get mouse position
-    #    window["-GRAPH-"].relocate_figure(circle, x - SQ_SIZE // 2, y + SQ_SIZE // 2)   # Move using center of square to mouse pos
-    #    window["-GRAPH-"].move_figure(other_circle, 1, 0)
-
+    window["-GRAPH-"].move_figure(circle, 1, 0)
 window.close()
