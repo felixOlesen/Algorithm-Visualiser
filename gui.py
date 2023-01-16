@@ -45,7 +45,7 @@ def CalcFitness(x1, x2, fitFunc):
         return fitness
 
 class PSO:
-    def __init__(self, PopSize=5, Gen=20, FitFunc="beale"):
+    def __init__(self, PopSize=10, Gen=50, FitFunc="beale"):
         # Initializing PSO params
         self.PopSize = PopSize
         self.Gen = Gen
@@ -116,14 +116,9 @@ class PSO:
 
         return ind
 
-    def EvalPop(self, ind):
-        return CalcFitness(ind[0], ind[1], self.FitFunc)
-
     def PSOLoop(self):
         gbest = np.array([0,0,0,0])
         for gen in range(self.Gen):
-            #self.Pop = list.sort(self.Pop, key=self.EvalPop)
-            #self.gbest = self.Pop[0]
             
             particle_index = 0
             for part in self.Pop:
