@@ -43,7 +43,7 @@ def CalcFitness(x1, x2, fitFunc):
         return fitness
 
 class PSO:
-    def __init__(self, PopSize=10, Gen=50, FitFunc="beale"):
+    def __init__(self, PopSize=10, Gen=50, FitFunc="mccormick", Window = None):
         # Initializing PSO params
         self.PopSize = PopSize
         self.Gen = Gen
@@ -56,18 +56,22 @@ class PSO:
         self.V_INITIAL = 0.01
         self.Pop = list()
         self.FitFunc = FitFunc
+        self.Window = Window
 
         if FitFunc == "himmelblau":
+            self.OPTIMA = [0,0]
             self.X1MIN = -4.5
             self.X1MAX = 4.5
             self.X2MIN = -4.5
             self.X2MAX = 4.5
         elif FitFunc == "beale":
+            self.OPTIMA = [300,50]
             self.X1MIN = -5
             self.X1MAX = 5
             self.X2MIN = -5
             self.X2MAX = 5
         elif FitFunc == "mccormick":
+            self.OPTIMA =[-54.719,-154.719]
             self.X1MIN = -1.5
             self.X1MAX = 4
             self.X2MIN = -3
@@ -75,8 +79,19 @@ class PSO:
         
 
     def PopulateSpace(self):
+
+        self.Window["-GRAPH-"].draw_circle(self.OPTIMA, 5, fill_color = "green", line_color = "green", line_width = 1)
+
         for i in range(self.PopSize):
-            ind_i = np.array([random.uniform(self.X1MIN, self.X1MAX), random.uniform(self.X2MIN, self.X2MAX), self.V_INITIAL, self.V_INITIAL])
+            x1_start = random.uniform(self.X1MIN, self.X1MAX)
+            x2_start = random.uniform(self.X2MIN, self.X2MAX)
+            graph_start = [x1_start*100, x2_start*100]
+            circle = self.Window["-GRAPH-"].draw_circle(graph_start,
+                            PARTICLE_SIZE,
+                            fill_color = "red",
+                            line_color = "red",
+                            line_width = 1)
+            ind_i = [x1_start, x2_start, self.V_INITIAL, self.V_INITIAL, circle]
             self.Pop.append(ind_i)
         print(self.Pop)
     
@@ -110,7 +125,13 @@ class PSO:
                 new_pos = self.X2MIN
             elif i == 1 and new_pos > self.X2MAX:
                 new_pos = self.X2MAX
+            
+            #if i == 0:
+            
+
+            
             ind[i] = new_pos
+        self.Window["-GRAPH-"].relocate_figure(ind[4], ind[0]*100, ind[1]*100)
 
         return ind
 
@@ -139,46 +160,31 @@ class PSO:
 
             print("Current global best position: (X1: ",gbest[0], " X2: ", gbest[1])
             print("Global Best Fitness: ", CalcFitness(pbest[0], pbest[1], self.FitFunc))
+            event, values = self.Window.read(timeout=DELAY)
+            if event == sg.WIN_CLOSED:
+                break
 
-
-pso = PSO()
-pso.PopulateSpace()
-pso.PSOLoop()
 
 '''
 TODO: 
-GUI Stuff
-- Set the center of the graph
-- Draw the circles for each individual
-- Draw circle for global minima
-- Update position with velocity or position of particles from update function
+- Implement Himmelblau optima
+- Add objective space images as backgrounds
+- Add buttons to window layout for in-app functions
+
 '''
 
-GRAPH_SIZE = (450, 450)
+GRAPH_SIZE = (1000, 1000)
 START = (0, 0)              # We'll assume X and Y are both this value
-PARTICLE_SIZE = 3           # Both width and height will be this value
-DELAY = 500
-
+PARTICLE_SIZE = 5           # Both width and height will be this value
+DELAY = 75
 layout = [[sg.Graph(
-            canvas_size=GRAPH_SIZE, graph_bottom_left=(-225, -225), graph_top_right=(225,225),   # Define the graph area
+            canvas_size=GRAPH_SIZE, graph_bottom_left=(-500, -500), graph_top_right=(500,500),   # Define the graph area
             background_color='white',
             key="-GRAPH-",
             pad=0)]]
 
 window = sg.Window("Simple Circle Movement", layout, finalize=True, margins=(0,0))
-
-# draw the square we'll move around
-#square = window["-GRAPH-"].draw_rectangle(START, (START[0]+SQ_SIZE, START[1]+SQ_SIZE), fill_color='black')
-circle = window["-GRAPH-"].draw_circle(START,
-    PARTICLE_SIZE,
-    fill_color = "green",
-    line_color = "green",
-    line_width = 1)
-
-while True:
-    event, values = window.read(timeout=DELAY)
-    if event == sg.WIN_CLOSED:
-        break
-
-    window["-GRAPH-"].move_figure(circle, 1, 0)
+pso = PSO(PopSize=30, Gen=50, FitFunc="mccormick", Window=window)
+pso.PopulateSpace()
+pso.PSOLoop()
 window.close()
