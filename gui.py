@@ -59,7 +59,15 @@ class PSO:
         self.Window = Window
 
         if FitFunc == "himmelblau":
-            self.OPTIMA = [0,0]
+            # x1 = 3, x2 = 2
+            # x1 = -2.805118, x2 = 3.131312
+            # x1 = -3.779310, x2 = -3.283186
+            # x1 = 3.584428, x2 = -1.848126
+            self.OPTIMA0 = [300,200]
+            self.OPTIMA1 = [-280.5118,313.1312]
+            self.OPTIMA2 = [-377.9310,-328.3186]
+            self.OPTIMA3 = [358.4428,-184.8126]
+            self.OPTIMALIST = [self.OPTIMA0,self.OPTIMA1,self.OPTIMA2,self.OPTIMA3]
             self.X1MIN = -4.5
             self.X1MAX = 4.5
             self.X2MIN = -4.5
@@ -79,8 +87,12 @@ class PSO:
         
 
     def PopulateSpace(self):
+        if self.FitFunc == "himmelblau":
+            for optimum in self.OPTIMALIST:
+                self.Window["-GRAPH-"].draw_circle(optimum, 5, fill_color = "green", line_color = "green", line_width = 1)
 
-        self.Window["-GRAPH-"].draw_circle(self.OPTIMA, 5, fill_color = "green", line_color = "green", line_width = 1)
+        else:
+            self.Window["-GRAPH-"].draw_circle(self.OPTIMA, 5, fill_color = "green", line_color = "green", line_width = 1)
 
         for i in range(self.PopSize):
             x1_start = random.uniform(self.X1MIN, self.X1MAX)
@@ -167,10 +179,9 @@ class PSO:
 
 '''
 TODO: 
-- Implement Himmelblau optima
 - Add objective space images as backgrounds
 - Add buttons to window layout for in-app functions
-
+- Comment stuff
 '''
 
 GRAPH_SIZE = (1000, 1000)
@@ -184,7 +195,7 @@ layout = [[sg.Graph(
             pad=0)]]
 
 window = sg.Window("Simple Circle Movement", layout, finalize=True, margins=(0,0))
-pso = PSO(PopSize=30, Gen=50, FitFunc="mccormick", Window=window)
+pso = PSO(PopSize=30, Gen=50, FitFunc="himmelblau", Window=window)
 pso.PopulateSpace()
 pso.PSOLoop()
 window.close()
