@@ -179,12 +179,13 @@ class PSO:
 
 '''
 TODO: 
-- Add objective space images as backgrounds
-- Add buttons to window layout for in-app functions
-- Comment stuff
+- Add Main loop
+- Assign form values to variables in code
+- Improve Button Aesthetics
 '''
-
-GRAPH_SIZE = (1000, 1000)
+FIT_FUNCS = ["Himmelblau", "Mccormick", "Beale"]
+ALGORITHMS = ["PSO"]
+GRAPH_SIZE = (1000, 800)
 START = (0, 0)              # We'll assume X and Y are both this value
 PARTICLE_SIZE = 5           # Both width and height will be this value
 DELAY = 75
@@ -192,10 +193,14 @@ layout = [[sg.Graph(
             canvas_size=GRAPH_SIZE, graph_bottom_left=(-500, -500), graph_top_right=(500,500),   # Define the graph area
             background_color='white',
             key="-GRAPH-",
-            pad=0)]]
+            pad=0)],
+            [sg.Text("Fitness Function:", size=(15,1), key="-FitFuncText-"), sg.Listbox(FIT_FUNCS, FIT_FUNCS[0], select_mode="LISTBOX_SELECT_MODE_SINGLE", key="-LBOXFitFunc-"), sg.Text("Population Size:", size=(15,1), key="-POPSIZETEXT-"), sg.Input(default_text="30", size=(10,10), key="-POPSIZEINPUT-")],
+            [sg.Text("Alrogithm:", size=(15,1), key="-AlgoText-"), sg.Listbox(ALGORITHMS, ALGORITHMS[0], select_mode="LISTBOX_SELECT_MODE_SINGLE", key="-LBOXAlgo-"), sg.Text("Generations:", size=(15,1), key="-GENTEXT-"), sg.Input(default_text="100", size=(10,10), key="-GENINPUT-")],
+            [sg.Button(button_text="Start", key="-STARTBUTTON-"), sg.Button(button_text="Reset", key="-RESETBUTTON-"), sg.Button(button_text="Close", key="-CLOSEBUTTON-")]
+            ]
 
 window = sg.Window("Simple Circle Movement", layout, finalize=True, margins=(0,0))
-pso = PSO(PopSize=30, Gen=50, FitFunc="himmelblau", Window=window)
+pso = PSO(PopSize=30, Gen=100, FitFunc="himmelblau", Window=window)
 pso.PopulateSpace()
 pso.PSOLoop()
 window.close()
