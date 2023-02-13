@@ -179,12 +179,11 @@ class PSO:
 
 '''
 TODO: 
-- Add Main loop
-- Assign form values to variables in code
-- Improve Button Aesthetics
+- Improve Button Aesthetics.
 - Enter REGEX for the lists of fitness functions so that capitals are allowed.
-- Find better solution to casting the vals as ints
-- Improve Button Layout and color-scheme
+- Find better solution to casting the vals as ints.
+- Improve Button Layout and color-scheme.
+- Add progress bar to or number in the corner to show how many gens have passed.
 '''
 FIT_FUNCS = ["himmelblau", "mccormick", "beale"]
 ALGORITHMS = ["PSO"]
@@ -201,18 +200,19 @@ layout = [[sg.Graph(
             [sg.Text("Alrogithm:", size=(15,1), key="-AlgoText-"), sg.Listbox(ALGORITHMS, ALGORITHMS[0], select_mode="LISTBOX_SELECT_MODE_SINGLE", key="-LBOXAlgo-"), sg.Text("Generations:", size=(15,1), key="-GENTEXT-"), sg.Input(default_text="100", size=(10,10), key="-GENINPUT-")],
             [sg.Button(button_text="Start", key="-STARTBUTTON-"), sg.Button(button_text="Close", key="-CLOSEBUTTON-")]
             ]
-
-window = sg.Window("Simple Circle Movement", layout, finalize=True, margins=(0,0))
+window = sg.Window("Algorithm Visualizer", layout, finalize=True, margins=(0,0))
 
 
 while True:
     event, values = window.read()
     if event is None or event == "-CLOSEBUTTON-":
         break
+
     popsize = int(values["-POPSIZEINPUT-"])
     generations = int(values["-GENINPUT-"])
     fitfunc = values["-LBOXFitFunc-"]
     algorithm = values["-LBOXAlgo-"]
+
     if event == "-STARTBUTTON-":
         window["-GRAPH-"].erase()
         pso = PSO(PopSize=popsize, Gen=generations, FitFunc=fitfunc[0], Window=window)
