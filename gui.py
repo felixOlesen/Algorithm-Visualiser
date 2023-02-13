@@ -182,13 +182,16 @@ TODO:
 - Add Main loop
 - Assign form values to variables in code
 - Improve Button Aesthetics
+- Enter REGEX for the lists of fitness functions so that capitals are allowed.
+- Find better solution to casting the vals as ints
+- Improve Button Layout and color-scheme
 '''
-FIT_FUNCS = ["Himmelblau", "Mccormick", "Beale"]
+FIT_FUNCS = ["himmelblau", "mccormick", "beale"]
 ALGORITHMS = ["PSO"]
 GRAPH_SIZE = (1000, 800)
 START = (0, 0)              # We'll assume X and Y are both this value
 PARTICLE_SIZE = 5           # Both width and height will be this value
-DELAY = 75
+DELAY = 60
 layout = [[sg.Graph(
             canvas_size=GRAPH_SIZE, graph_bottom_left=(-500, -500), graph_top_right=(500,500),   # Define the graph area
             background_color='white',
@@ -196,11 +199,23 @@ layout = [[sg.Graph(
             pad=0)],
             [sg.Text("Fitness Function:", size=(15,1), key="-FitFuncText-"), sg.Listbox(FIT_FUNCS, FIT_FUNCS[0], select_mode="LISTBOX_SELECT_MODE_SINGLE", key="-LBOXFitFunc-"), sg.Text("Population Size:", size=(15,1), key="-POPSIZETEXT-"), sg.Input(default_text="30", size=(10,10), key="-POPSIZEINPUT-")],
             [sg.Text("Alrogithm:", size=(15,1), key="-AlgoText-"), sg.Listbox(ALGORITHMS, ALGORITHMS[0], select_mode="LISTBOX_SELECT_MODE_SINGLE", key="-LBOXAlgo-"), sg.Text("Generations:", size=(15,1), key="-GENTEXT-"), sg.Input(default_text="100", size=(10,10), key="-GENINPUT-")],
-            [sg.Button(button_text="Start", key="-STARTBUTTON-"), sg.Button(button_text="Reset", key="-RESETBUTTON-"), sg.Button(button_text="Close", key="-CLOSEBUTTON-")]
+            [sg.Button(button_text="Start", key="-STARTBUTTON-"), sg.Button(button_text="Close", key="-CLOSEBUTTON-")]
             ]
 
 window = sg.Window("Simple Circle Movement", layout, finalize=True, margins=(0,0))
-pso = PSO(PopSize=30, Gen=100, FitFunc="himmelblau", Window=window)
-pso.PopulateSpace()
-pso.PSOLoop()
+
+
+while True:
+    event, values = window.read()
+    if event is None or event == "-CLOSEBUTTON-":
+        break
+    popsize = int(values["-POPSIZEINPUT-"])
+    generations = int(values["-GENINPUT-"])
+    fitfunc = values["-LBOXFitFunc-"]
+    algorithm = values["-LBOXAlgo-"]
+    if event == "-STARTBUTTON-":
+        window["-GRAPH-"].erase()
+        pso = PSO(PopSize=popsize, Gen=generations, FitFunc=fitfunc[0], Window=window)
+        pso.PopulateSpace()
+        pso.PSOLoop()
 window.close()
